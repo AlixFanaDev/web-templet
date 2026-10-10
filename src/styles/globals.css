@@ -1,0 +1,332 @@
+/* ==========================================================================
+   Musti Targui Morocco Tours — global styles
+   Palette, typography, Lenis reset, grain/zellige textures, motion guards.
+   ========================================================================== */
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  /* Palette -------------------------------------------------------------
+     Each token ships as a hex value (for raw CSS) plus an RGB channel triple
+     so Tailwind can generate alpha variants (`bg-sand/70`, `border-ink/25`).
+     `tailwind.config.ts` reads the `-rgb` channels with <alpha-value>. */
+  --sand: #f4ede4;
+  --sand-rgb: 244 237 228;
+  --sand-deep: #e8dccb;
+  --sand-deep-rgb: 232 220 203;
+  --clay: #c1683c;
+  --clay-rgb: 193 104 60;
+  /* AA-safe clay for small text / solid buttons on sand (≥4.5:1 both ways). */
+  --clay-deep: #964a20;
+  --clay-deep-rgb: 150 74 32;
+  --saffron: #e0a83e;
+  --saffron-rgb: 224 168 62;
+  /* AA-safe saffron for eyebrows on sand (4.56:1). Bright saffron stays on dark. */
+  --saffron-deep: #7a591c;
+  --saffron-deep-rgb: 122 89 28;
+  --majorelle: #2e4ba8;
+  --majorelle-rgb: 46 75 168;
+  --indigo-night: #10192e;
+  --indigo-night-rgb: 16 25 46;
+  --ink: #1c1a17;
+  --ink-rgb: 28 26 23;
+  --sand-muted: #6b5f51;
+  --sand-muted-rgb: 107 95 81;
+
+  /* Type ---------------------------------------------------------------- */
+  --font-display: 'Fraunces', Georgia, 'Times New Roman', serif;
+  --font-sans: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+
+  /* Motion -------------------------------------------------------------- */
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --duration-micro: 260ms;
+  --duration-reveal: 900ms;
+}
+
+@layer base {
+  *,
+  *::before,
+  *::after {
+    border-color: rgb(28 26 23 / 0.08);
+  }
+
+  html {
+    -webkit-text-size-adjust: 100%;
+    scroll-behavior: auto;
+  }
+
+  body {
+    margin: 0;
+    background-color: var(--sand);
+    color: var(--ink);
+    font-family: var(--font-sans);
+    font-size: 17px;
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow-x: hidden;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-display);
+    font-weight: 500;
+    letter-spacing: -0.02em;
+    line-height: 1.08;
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  img,
+  svg,
+  video {
+    display: block;
+    max-width: 100%;
+  }
+
+  /* Focus: visible majorelle ring on every interactive element ------------ */
+  :focus-visible {
+    outline: 2px solid var(--majorelle);
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+
+  ::selection {
+    background: var(--saffron);
+    color: var(--indigo-night);
+  }
+}
+
+/* ==========================================================================
+   Lenis — recommended CSS reset (https://lenis.darkroom.engineering)
+   ========================================================================== */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+.lenis.lenis-smooth iframe {
+  pointer-events: none;
+}
+
+/* ==========================================================================
+   Typography utilities
+   ========================================================================== */
+
+@layer components {
+  /* Thin uppercase micro-label used for eyebrow labels. */
+  .eyebrow {
+    @apply inline-block font-sans text-[11px] font-medium uppercase tracking-eyebrow;
+    line-height: 1.4;
+  }
+
+  .h2-display {
+    font-family: var(--font-display);
+    font-size: clamp(2rem, 5vw, 4rem);
+    line-height: 1.06;
+    letter-spacing: -0.02em;
+  }
+
+  .h1-display {
+    font-family: var(--font-display);
+    font-size: clamp(2.75rem, 8vw, 7rem);
+    line-height: 1.02;
+    letter-spacing: -0.03em;
+    font-weight: 500;
+  }
+
+  .body-copy {
+    font-size: clamp(1rem, 1vw + 0.75rem, 1.125rem);
+    line-height: 1.75;
+  }
+
+  /* Pills / buttons ------------------------------------------------------ */
+  .btn {
+    @apply inline-flex min-h-[44px] items-center justify-center gap-2 rounded-full px-7 py-3 font-sans text-[15px] font-medium transition-colors duration-300;
+  }
+
+  .btn-solid-clay {
+    @apply btn bg-clay-deep text-sand hover:bg-saffron hover:text-indigo-night;
+  }
+
+  .btn-solid-saffron {
+    @apply btn bg-saffron text-indigo-night hover:bg-clay-deep hover:text-sand;
+  }
+
+  .btn-ghost-light {
+    @apply btn border border-white/45 text-white hover:border-white hover:bg-white/10;
+  }
+
+  .btn-ghost-dark {
+    @apply btn border border-ink/25 text-ink hover:border-clay-deep hover:text-clay-deep;
+  }
+
+  /* Text link with animated arrow */
+  .link-arrow {
+    @apply inline-flex min-h-[44px] items-center gap-2 font-sans text-[15px] font-medium text-clay-deep;
+  }
+  .link-arrow .arrow {
+    display: inline-block;
+    transition: transform 300ms var(--ease-out-expo);
+  }
+  .link-arrow:hover .arrow,
+  .link-arrow:focus-visible .arrow {
+    transform: translateX(6px);
+  }
+}
+
+/* ==========================================================================
+   Textures
+   ========================================================================== */
+
+/* Grain / noise overlay — SVG feTurbulence, 3–5% opacity over dark sections. */
+.grain-overlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  opacity: 0.045;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200' viewBox='0 0 200 200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 180px 180px;
+}
+
+/* Faint Berber/zellige line motif divider. */
+.zellige-divider {
+  display: block;
+  width: 100%;
+  color: var(--saffron);
+  opacity: 0.25;
+}
+
+/* ==========================================================================
+   Custom scrollbar (subtle, sand-toned)
+   ========================================================================== */
+::-webkit-scrollbar {
+  width: 10px;
+}
+::-webkit-scrollbar-track {
+  background: var(--sand-deep);
+}
+::-webkit-scrollbar-thumb {
+  background: color-mix(in srgb, var(--sand-muted) 55%, transparent);
+  border-radius: 9999px;
+  border: 2px solid var(--sand-deep);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--clay);
+}
+
+/* ==========================================================================
+   Scroll progress bar (transform-driven, no React re-render per frame)
+   ========================================================================== */
+.scroll-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: var(--saffron);
+  transform: scaleX(0);
+  transform-origin: 0 50%;
+  z-index: 80;
+  will-change: transform;
+}
+
+/* ==========================================================================
+   Marquee — keyframes (declared here, not in Tailwind: the animation name is
+   set via inline longhands from <Marquee/>, so Tailwind never sees an
+   `animate-marquee` utility and would tree-shake the keyframes away)
+   ========================================================================== */
+@keyframes marquee {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+@keyframes marquee-reverse {
+  0% {
+    transform: translateX(-50%);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+
+/* Hero heat haze — the name is set via inline style in <Hero/>, which Tailwind
+   can't detect, so the keyframes live here (blur on the element softens the
+   translated edges). */
+@keyframes haze-drift {
+  0% {
+    transform: translate3d(-2%, 0, 0);
+  }
+  100% {
+    transform: translate3d(2%, 0, 0);
+  }
+}
+
+/* ==========================================================================
+   Marquee — pause on hover / keyboard focus, unpause on `.no-pause` tracks
+   ========================================================================== */
+.marquee-group:hover .marquee-track,
+.marquee-group:focus-within .marquee-track {
+  animation-play-state: paused;
+}
+.marquee-group.no-pause:hover .marquee-track,
+.marquee-group.no-pause:focus-within .marquee-track {
+  animation-play-state: running;
+}
+
+/* ==========================================================================
+   Reduced motion — kill scroll-scrubbed timelines & marquees, reveal content
+   ========================================================================== */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  /* Reveal targets are hidden only while JS has marked them as "pending".
+     With reduced motion we never apply that marker, but this guard makes sure
+     a no-JS / failed-JS render still shows all content. */
+  [data-reveal] {
+    opacity: 1 !important;
+    filter: none !important;
+    transform: none !important;
+    clip-path: none !important;
+  }
+}
+
+/* Utility: hide scrollbar on horizontal snap carousels */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
