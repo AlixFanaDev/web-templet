@@ -1,7 +1,9 @@
 import { useRef } from 'react';
 import { SectionHeading } from '@/components/ui/SectionHeading';
+import { WhatsAppIcon } from '@/components/ui/WhatsAppIcon';
 import { Accordion } from '@/components/twentyone/accordion';
 import { faqs } from '@/data/faqs';
+import { site, telHref, whatsapp } from '@/data/site';
 import { useAnimeScope } from '@/lib/use-anime-scope';
 import { animate } from 'animejs';
 import { onScroll } from 'animejs';
@@ -64,6 +66,31 @@ export function FaqAccordion() {
           {/* NOTE: the first item opens by default so the interaction is
               discoverable; single-open behaviour keeps the column calm. */}
           <Accordion items={faqs} defaultOpenId={faqs[0].id} />
+
+          {/* Answers exhausted? Hand the visitor straight to a human. */}
+          <div className="mt-14 flex flex-col items-center gap-5 rounded-2xl border border-ink/8 bg-sand/70 px-6 py-8 text-center">
+            <p className="font-display text-xl font-medium text-ink">
+              Still have a question?
+            </p>
+            <p className="max-w-md text-sm leading-relaxed text-sand-muted">
+              Message us on WhatsApp or give us a call — we&apos;re based in Merzouga and usually
+              reply within a few hours.
+            </p>
+            <div className="flex flex-wrap justify-center gap-3">
+              <a
+                href={whatsapp()}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="btn bg-clay-deep text-sand hover:bg-saffron hover:text-indigo-night"
+              >
+                <WhatsAppIcon className="h-[18px] w-[18px]" />
+                Chat on WhatsApp
+              </a>
+              <a href={telHref} className="btn-ghost-dark">
+                Call {site.phoneDisplay}
+              </a>
+            </div>
+          </div>
         </div>
       </div>
     </section>

@@ -52,9 +52,10 @@ src/
   data/
     assets.ts                  # image registry: path + intrinsic width/height + alt
     lqip.ts                    # base64 blur for the hero (first paint)
+    site.ts                    # contact details + socials (single source of truth)
     tours.ts destinations.ts testimonials.ts faqs.ts
   components/
-    layout/Navbar.tsx Footer.tsx
+    layout/Navbar.tsx Footer.tsx SmoothScroll.tsx WhatsAppButton.tsx
     sections/                   # Hero, TrustMarquee, Welcome, WhyChooseUs,
                                 # FeaturedTours, Destinations, Testimonials,
                                 # GalleryParallax, PlanCta, FaqAccordion
@@ -130,6 +131,36 @@ Useful defaults in `src/lib/scroll.ts`: `revealOnEnter(el)` and
 `prefers-reduced-motion` is honoured three times: CSS (marquee/haze/scroll-cue
 animations stop in `globals.css`), hooks (`useReducedMotion()` skips anime scopes —
 content is never hidden waiting for an animation), and Lenis (`smoothWheel: false`).
+
+---
+
+## Contact & conversion
+
+All contact details live in **`src/data/site.ts`** — one object plus a couple of
+helpers — and every tappable contact point reads from it:
+
+| Surface | What it renders |
+| --- | --- |
+| `layout/Footer.tsx` | email, phone, WhatsApp, location (map link) + live socials |
+| `sections/PlanCta.tsx` | “Chat on WhatsApp” + “Call …” buttons and an email/location row |
+| `sections/FaqAccordion.tsx` | “Still have a question?” WhatsApp / call panel |
+| `sections/FeaturedTours.tsx` | a “Book …” CTA opens WhatsApp pre-filled with that tour |
+| `layout/WhatsAppButton.tsx` | floating WhatsApp button, revealed after the hero |
+| `index.html` | `TravelAgency` JSON-LD (phone, email, address, socials) |
+
+```ts
+import { site, telHref, mailtoHref, whatsapp, whatsappTour } from '@/data/site';
+
+whatsapp();                                  // bare chat link
+whatsapp('Hi, I have a question…');          // pre-filled message
+whatsappTour('8-Day Grand Tour of Morocco'); // pre-filled per-tour enquiry
+```
+
+There is no booking backend: WhatsApp click-to-chat and `mailto:` are the
+intentional submission channels, and the footer newsletter hands the signup to
+the business inbox. To change a number, email, address or social link, edit
+`site.ts` only; remember the JSON-LD copy in `index.html` is the one duplication
+(browsers can’t read TypeScript).
 
 ---
 

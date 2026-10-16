@@ -22,10 +22,15 @@ export function GradualBlur({
         'linear-gradient(to right, black 0%, transparent 100%)'
       : 'linear-gradient(to left, black 0%, transparent 100%)';
 
+  // Pin the overlay to the edge it belongs to — without `left-0` / `right-0`
+  // both overlays fall back to their static inline position (the container's
+  // left edge) and the right-hand fade lands on the wrong side.
+  const edge = side === 'left' ? 'left-0' : 'right-0';
+
   return (
     <span
       aria-hidden="true"
-      className={`pointer-events-none absolute inset-y-0 z-10 ${width} ${className}`}
+      className={`pointer-events-none absolute inset-y-0 z-10 ${edge} ${width} ${className}`}
       style={{
         backdropFilter: 'blur(6px)',
         WebkitBackdropFilter: 'blur(6px)',

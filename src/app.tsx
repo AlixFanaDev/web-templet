@@ -11,6 +11,7 @@ import { WhyChooseUs } from '@/components/sections/WhyChooseUs';
 import { Footer } from '@/components/layout/Footer';
 import { Navbar } from '@/components/layout/Navbar';
 import { SmoothScroll } from '@/components/layout/SmoothScroll';
+import { WhatsAppButton } from '@/components/layout/WhatsAppButton';
 import { SectionDivider } from '@/components/ui/SectionDivider';
 
 /**
@@ -40,6 +41,7 @@ export default function App() {
       </main>
 
       <Footer />
+      <WhatsAppButton />
     </SmoothScroll>
   );
 }

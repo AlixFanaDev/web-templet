@@ -1,9 +1,11 @@
 import { animate, onScroll, stagger } from 'animejs';
-import { Facebook, Instagram, Mail, MapPin, Phone, Twitter, Youtube } from 'lucide-react';
-import { useRef } from 'react';
+import { Facebook, Instagram, Mail, MapPin, Phone } from 'lucide-react';
+import { useRef, useState, type ComponentType, type FormEvent } from 'react';
 import { useAnimeScope } from '@/lib/use-anime-scope';
 import { EyebrowLabel } from '@/components/ui/EyebrowLabel';
 import { GrainOverlay } from '@/components/ui/GrainOverlay';
+import { WhatsAppIcon } from '@/components/ui/WhatsAppIcon';
+import { mailtoHref, site, telHref, whatsapp, whatsappGreeting } from '@/data/site';
 import type { NavLink } from '@/components/twentyone/floating-navbar';
 
 const QUICK_LINKS: NavLink[] = [
@@ -11,7 +13,7 @@ const QUICK_LINKS: NavLink[] = [
   { label: 'About Us', href: '#about' },
   { label: 'Tours', href: '#tours' },
   { label: 'Destinations', href: '#destinations' },
-  { label: 'Blog', href: '#reviews' },
+  { label: 'Reviews', href: '#reviews' },
   { label: 'FAQ', href: '#faq' },
   { label: 'Contact', href: '#cta' },
 ];
@@ -24,23 +26,18 @@ const POPULAR_TOURS = [
   'Custom Tours',
 ];
 
-type Social = {
-  label: string;
-  icon?: typeof Facebook;
-  /** Glyph fallback where Lucide ships no brand mark (Pinterest, TripAdvisor). */
-  text?: string;
-};
-
-// NOTE: Lucide ships Facebook / Instagram / Twitter / YouTube but no Pinterest
-// or TripAdvisor mark; those two fall back to letter glyphs rather than
-// pulling in a second icon package.
-const SOCIALS: Social[] = [
-  { label: 'Facebook', icon: Facebook },
-  { label: 'Instagram', icon: Instagram },
-  { label: 'Twitter / X', icon: Twitter },
-  { label: 'Pinterest', text: 'P' },
-  { label: 'YouTube', icon: Youtube },
-  { label: 'TripAdvisor', text: 'Ⓣ' },
+// NOTE: Lucide ships Facebook / Instagram / Mail / Phone but no WhatsApp mark,
+// so the site vendors one glyph (`WhatsAppIcon`) instead of a second icon pack.
+// Only real, live profiles are listed — no dead brand links.
+type SocialIcon = ComponentType<{
+  className?: string;
+  'aria-hidden'?: boolean | 'true' | 'false';
+}>;
+const SOCIALS: { label: string; href: string; Icon: SocialIcon }[] = [
+  { label: 'WhatsApp', href: whatsapp(whatsappGreeting), Icon: WhatsAppIcon },
+  { label: 'Instagram', href: site.instagram, Icon: Instagram },
+  { label: 'Facebook', href: site.facebook, Icon: Facebook },
+  { label: 'Email', href: mailtoHref, Icon: Mail },
 ];
 
 const TOUR_LINKS = POPULAR_TOURS.map((label) => ({ label, href: '#tours' }));
@@ -52,6 +49,7 @@ const TOUR_LINKS = POPULAR_TOURS.map((label) => ({ label, href: '#tours' }));
  */
 export function Footer() {
   const ref = useRef<HTMLElement>(null);
+  const [subscribed, setSubscribed] = useState(false);
 
   useAnimeScope(ref, () => {
     const section = ref.current;
@@ -69,35 +67,70 @@ export function Footer() {
     });
   });
 
+  /**
+   * The newsletter is a static site with no backend; rather than a form that
+   * silently does nothing, it hands the signup to the business inbox so the
+   * request is actually actionable.
+   */
+  const onSubscribe = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const data = new FormData(event.currentTarget);
+    const email = String(data.get('email') ?? '');
+    window.location.href = `mailto:${site.email}?subject=${encodeURIComponent(
+      'Newsletter signup',
+    )}&body=${encodeURIComponent(`Please add me to the Musti Targui newsletter.\n\nEmail: ${email}`)}`;
+    setSubscribed(true);
+  };
+
+  const year = new Date().getFullYear();
+
   return (
     <footer ref={ref} className="relative overflow-hidden bg-indigo-night text-sand">
       <GrainOverlay />
 
       <div className="relative z-10 mx-auto max-w-7xl px-6 pb-10 pt-20 md:px-10 md:pt-28">
         <div className="grid grid-cols-1 gap-12 md:grid-cols-2 lg:grid-cols-4 lg:gap-8">
-          {/* Col 1 — brand */}
+          {/* Col 1 — brand + contact */}
           <div data-footer-col className="flex flex-col gap-4">
             <p className="font-display text-xl font-semibold uppercase leading-tight tracking-[0.16em] text-sand">
               Musti Targui
               <span className="block">Morocco Tours</span>
             </p>
-            <p className="font-display text-lg italic text-saffron">Your Journey, Our Passion.</p>
+            <p className="font-display text-lg italic text-saffron">{site.tagline}</p>
             <ul className="mt-2 flex flex-col gap-3 text-sm text-sand/70">
               <li className="flex items-start gap-3">
                 <Mail size={16} className="mt-1 shrink-0 text-saffron" aria-hidden="true" />
-                <a href="mailto:info@mustitarguimoroccotours.com" className="hover:text-sand">
-                  info@mustitarguimoroccotours.com
+                <a href={mailtoHref} className="break-all hover:text-sand">
+                  {site.email}
                 </a>
               </li>
               <li className="flex items-center gap-3">
                 <Phone size={16} className="shrink-0 text-saffron" aria-hidden="true" />
-                <a href="tel:+212XXXXXXXXX" className="hover:text-sand">
-                  +212 XXX XXX XXX
+                <a href={telHref} className="hover:text-sand">
+                  {site.phoneDisplay}
+                </a>
+              </li>
+              <li className="flex items-center gap-3">
+                <WhatsAppIcon className="h-4 w-4 shrink-0 text-saffron" />
+                <a
+                  href={whatsapp(whatsappGreeting)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:text-sand"
+                >
+                  WhatsApp us
                 </a>
               </li>
               <li className="flex items-center gap-3">
                 <MapPin size={16} className="shrink-0 text-saffron" aria-hidden="true" />
-                <span>Merzouga, Morocco</span>
+                <a
+                  href={site.mapUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:text-sand"
+                >
+                  {site.location}
+                </a>
               </li>
             </ul>
           </div>
@@ -149,7 +182,7 @@ export function Footer() {
 
             <form
               className="mt-1 flex items-center gap-2 rounded-full border border-sand/25 bg-sand/5 p-1.5 focus-within:border-saffron"
-              onSubmit={(event) => event.preventDefault()}
+              onSubmit={onSubscribe}
             >
               <label htmlFor="newsletter-email" className="sr-only">
                 Email address
@@ -170,22 +203,22 @@ export function Footer() {
                 Subscribe
               </button>
             </form>
+            <p aria-live="polite" className="min-h-[1.25rem] text-xs text-saffron">
+              {subscribed ? 'Thanks! Opening your email app to confirm…' : ''}
+            </p>
 
-            <ul className="mt-3 flex flex-wrap gap-2">
+            <ul className="flex flex-wrap gap-2">
               {SOCIALS.map((social) => (
                 <li key={social.label}>
                   <a
-                    href="#home"
+                    href={social.href}
                     aria-label={social.label}
+                    {...(/^https?:/.test(social.href)
+                      ? { target: '_blank', rel: 'noopener noreferrer' }
+                      : {})}
                     className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-sand/20 text-sand/70 transition-colors duration-300 hover:border-saffron hover:text-saffron"
                   >
-                    {social.text ? (
-                      <span aria-hidden="true" className="text-base leading-none">
-                        {social.text}
-                      </span>
-                    ) : social.icon ? (
-                      <social.icon size={17} aria-hidden="true" />
-                    ) : null}
+                    <social.Icon className="h-[17px] w-[17px]" aria-hidden="true" />
                   </a>
                 </li>
               ))}
@@ -195,7 +228,7 @@ export function Footer() {
 
         {/* Bottom bar */}
         <div className="mt-16 flex flex-col items-center justify-between gap-4 border-t border-sand/10 pt-7 text-xs text-sand/55 md:flex-row">
-          <p>© 2025 Musti Targui Morocco Tours. All Rights Reserved.</p>
+          <p>© {year} Musti Targui Morocco Tours. All Rights Reserved.</p>
           <p className="flex flex-wrap items-center justify-center gap-x-3 gap-y-1">
             <a href="#faq" className="transition-colors hover:text-saffron">
               Privacy Policy

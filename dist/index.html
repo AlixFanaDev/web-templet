@@ -5,10 +5,35 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta
       name="description"
-      content="Private, tailor-made Morocco tours led by local Berber experts — from the medinas of Marrakech to the golden dunes of Erg Chebbi."
+      content="Private, tailor-made Morocco tours led by local Berber experts — from the medinas of Marrakech to the golden dunes of Erg Chebbi. Based in Merzouga, Morocco."
     />
     <meta name="theme-color" content="#10192E" />
     <title>Musti Targui Morocco Tours — Private, Tailor-Made Sahara Journeys</title>
+
+    <!-- Open Graph / social preview.
+         NOTE: replace the relative og:image with an absolute URL once the site
+         has a production domain (some scrapers require absolute image URLs). -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Musti Targui Morocco Tours" />
+    <meta
+      property="og:title"
+      content="Musti Targui Morocco Tours — Private, Tailor-Made Sahara Journeys"
+    />
+    <meta
+      property="og:description"
+      content="Private, tailor-made Morocco tours led by local Berber experts — from the medinas of Marrakech to the golden dunes of Erg Chebbi."
+    />
+    <meta property="og:image" content="/assets/hero-dunes.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta
+      name="twitter:title"
+      content="Musti Targui Morocco Tours — Private, Tailor-Made Sahara Journeys"
+    />
+    <meta
+      name="twitter:description"
+      content="Private, tailor-made Morocco tours led by local Berber experts — from Marrakech to the dunes of Erg Chebbi."
+    />
+    <meta name="twitter:image" content="/assets/hero-dunes.jpg" />
 
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -19,10 +44,38 @@
     />
 
     <link rel="preload" as="image" type="image/avif" href="/assets/hero-dunes.avif" fetchpriority="high" />
-    <script type="module" crossorigin src="/assets/index-BTLlZ9vq.js"></script>
+
+    <!-- Structured data — keeps the phone / email / socials in sync with
+         `src/data/site.ts` (the single source of truth for contact details). -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "TravelAgency",
+        "name": "Musti Targui Morocco Tours",
+        "description": "Private, tailor-made Morocco tours led by local Berber experts, based in Merzouga at the edge of the Erg Chebbi dunes.",
+        "email": "mustitarguimoroccotours@gmail.com",
+        "telephone": "+212785827197",
+        "image": "/assets/hero-dunes.jpg",
+        "address": {
+          "@type": "PostalAddress",
+          "addressLocality": "Merzouga",
+          "addressRegion": "Drâa-Tafilalet",
+          "addressCountry": "MA"
+        },
+        "areaServed": {
+          "@type": "Country",
+          "name": "Morocco"
+        },
+        "sameAs": [
+          "https://www.instagram.com/musti_targui_tours",
+          "https://www.facebook.com/mustapha.aithammi"
+        ]
+      }
+    </script>
+    <script type="module" crossorigin src="/assets/index-DK2vzXwx.js"></script>
     <link rel="modulepreload" crossorigin href="/assets/lenis-C50JBnGk.js">
     <link rel="modulepreload" crossorigin href="/assets/anime-DhXB9VQ_.js">
-    <link rel="stylesheet" crossorigin href="/assets/index-COjKLbVf.css">
+    <link rel="stylesheet" crossorigin href="/assets/index-CIz0edCs.css">
   </head>
   <body>
     <div id="root"></div>

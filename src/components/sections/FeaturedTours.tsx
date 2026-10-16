@@ -4,8 +4,21 @@ import { useRef } from 'react';
 import { ResponsiveImage } from '@/components/ui/ResponsiveImage';
 import { SectionHeading } from '@/components/ui/SectionHeading';
 import { tours } from '@/data/tours';
+import { whatsappTour } from '@/data/site';
 import { useAnimeScope } from '@/lib/use-anime-scope';
 import { useIsDesktop, useReducedMotion } from '@/lib/use-reduced-motion';
+
+/**
+ * Tour CTAs are in-page links by default; a "Book …" action instead opens a
+ * WhatsApp chat pre-filled with the tour name, so the enquiry arrives ready to
+ * answer without a booking backend.
+ */
+function ctaTarget(label: string, tourTitle: string) {
+  if (/book/i.test(label)) {
+    return { href: whatsappTour(tourTitle), external: true };
+  }
+  return { href: '#cta', external: false };
+}
 
 /**
  * Featured tours — the core product section.
@@ -117,7 +130,10 @@ export function FeaturedTours() {
         </div>
 
         <div className="mt-16 flex flex-col gap-10 md:gap-0">
-          {tours.map((tour, index) => (
+          {tours.map((tour, index) => {
+            const primary = ctaTarget(tour.ctas[0], tour.title);
+            const secondary = tour.ctas[1] ? ctaTarget(tour.ctas[1], tour.title) : null;
+            return (
             <article
               key={tour.id}
               data-tour-card
@@ -180,11 +196,23 @@ export function FeaturedTours() {
                   <p className="text-[15px] leading-relaxed text-sand-muted">{tour.body}</p>
 
                   <div className="mt-auto flex flex-wrap items-center gap-3 pt-2">
-                    <a href="#cta" className="btn bg-clay-deep text-sand hover:bg-saffron hover:text-indigo-night">
+                    <a
+                      href={primary.href}
+                      {...(primary.external
+                        ? { target: '_blank', rel: 'noopener noreferrer' }
+                        : {})}
+                      className="btn bg-clay-deep text-sand hover:bg-saffron hover:text-indigo-night"
+                    >
                       {tour.ctas[0]}
                     </a>
-                    {tour.ctas[1] && (
-                      <a href="#cta" className="btn-ghost-dark">
+                    {secondary && (
+                      <a
+                        href={secondary.href}
+                        {...(secondary.external
+                          ? { target: '_blank', rel: 'noopener noreferrer' }
+                          : {})}
+                        className="btn-ghost-dark"
+                      >
                         {tour.ctas[1]}
                       </a>
                     )}
@@ -192,7 +220,8 @@ export function FeaturedTours() {
                 </div>
               </div>
             </article>
-          ))}
+            );
+          })}
         </div>
 
         <div className="mt-14 flex justify-center" data-tours-all>
